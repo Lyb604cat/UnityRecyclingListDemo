@@ -23,6 +23,12 @@ public class TestPanel : MonoBehaviour
     public Button moveToTopBtn;
     public Button moveToCenterBtn;
     public Button moveToBottomBtn;
+    
+    public Button pageUpBtn;
+    public Button pageDownBtn;
+
+    private int currentItemIndex = 0;
+    private int onePageAllItemIndex = 5;
 
     private void Start()
     {
@@ -57,6 +63,32 @@ public class TestPanel : MonoBehaviour
         {
             MoveToRow(RecyclingListView.ScrollPosType.Bottom);
         });
+        
+        pageUpBtn.onClick.AddListener(PageUp);
+        pageDownBtn.onClick.AddListener(PageDown);
+    }
+
+    private void PageUp()
+    {
+        
+        var targetRowIndex = currentItemIndex - onePageAllItemIndex;
+        if (targetRowIndex < 0)
+        {
+            targetRowIndex = 0;
+        }
+        scrollList.ScrollToRow(targetRowIndex, RecyclingListView.ScrollPosType.Top);
+        currentItemIndex = targetRowIndex;
+    }
+
+    private void PageDown()
+    {
+        var targetRowIndex = currentItemIndex + onePageAllItemIndex;
+        if (targetRowIndex > data.Count - onePageAllItemIndex)
+        {
+            targetRowIndex = data.Count - onePageAllItemIndex;
+        }
+        scrollList.ScrollToRow(targetRowIndex, RecyclingListView.ScrollPosType.Top);
+        currentItemIndex = targetRowIndex;
     }
 
     /// <summary>
@@ -140,6 +172,11 @@ public class TestPanel : MonoBehaviour
             return;
         }
         var rowIndex = int.Parse(moveToRowInput.text);
+        scrollList.ScrollToRow(rowIndex, posType);
+    }
+
+    private void MoveToRow(int rowIndex, RecyclingListView.ScrollPosType posType)
+    {
         scrollList.ScrollToRow(rowIndex, posType);
     }
 }
